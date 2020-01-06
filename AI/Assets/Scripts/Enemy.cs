@@ -37,7 +37,7 @@ public class Enemy : MonoBehaviour
     // 持續觸發
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.name == "蟻人")
+        if (collision.gameObject.tag=="Player")
         {
             Track(collision.transform.position);
         }
@@ -45,7 +45,7 @@ public class Enemy : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.name == "蟻人" && collision.transform.position.y < transform.position.y + 1)
+        if (collision.gameObject.tag == "Player" && collision.transform.position.y < transform.position.y + 1)
         {
             collision.gameObject.GetComponent<Antman>().Damage(damage);
         }
@@ -58,7 +58,7 @@ public class Enemy : MonoBehaviour
     private void Move()
     {
         //r2d.AddForce(new Vector2(-speed, 0)); // 世界座標
-        r2d.AddForce(-transform.right * speed); // 區域座標 2D transform.right 右方、tranform.up 上方
+        r2d.AddForce(transform.right * speed); // 區域座標 2D transform.right 右方、tranform.up 上方
 
         // 碰撞資訊 = 物理.射線碰撞
         RaycastHit2D hit = Physics2D.Raycast(checkPoint.position, -checkPoint.up, 30.0f, 1 << 8);
@@ -79,11 +79,12 @@ public class Enemy : MonoBehaviour
         // 如果 玩家在右邊 角度 = 180
         if (target.x < transform.position.x)
         {
-            transform.eulerAngles = Vector3.zero;   // new Vector3(0, 0, 0)
+            transform.eulerAngles = new Vector3(0, 180, 0);
+              // new Vector3(0, 0, 0)
         }
         else
         {
-            transform.eulerAngles = new Vector3(0, 180, 0);
+            transform.eulerAngles = Vector3.zero;
         }
     }
     #endregion

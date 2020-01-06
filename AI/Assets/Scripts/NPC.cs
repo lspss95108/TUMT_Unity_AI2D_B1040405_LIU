@@ -29,6 +29,7 @@ public class NPC : MonoBehaviour
     [Header("介面")]
     public GameObject objCanvas;
     public Text textSay;
+    public GameObject fffff;
 
     #endregion
 
@@ -39,14 +40,19 @@ public class NPC : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         // 如果碰到物件為"玩家"
-        if (collision.name == "蟻人")
-            objCanvas.SetActive(true);
-        textSay.text = sayStart;
+        if (collision.gameObject.tag == "Player")
+        {
+            Say();
+
+        }
+            
+        
+        
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.name == "蟻人")
+        if (collision.gameObject.tag == "Player")
             SayClose();
     }
     #endregion
@@ -58,8 +64,10 @@ public class NPC : MonoBehaviour
     private void Say()
     {
         // 畫布.顯示
-        
-        StopAllCoroutines();
+        objCanvas.SetActive(true);
+        textSay.text = sayStart;
+
+
 
         if (countPlayer >= countFinish) _state = state.complete;
 
@@ -76,6 +84,7 @@ public class NPC : MonoBehaviour
                 break;
             case state.complete:
                 StartCoroutine(ShowDialog(sayComplete));        // 開始對話完成
+                fffff.SetActive(true);
                 break;
         }
     }

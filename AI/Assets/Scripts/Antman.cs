@@ -27,10 +27,10 @@ public class Antman : MonoBehaviour    // 類別 類別名稱
 
     //private Transform tra;
     private Rigidbody2D r2d;
-    private AudioSource aud;
     private Animator ani;
     private float hpMax;
     private bool isGround;
+    private CapsuleCollider2D jjj;
     #endregion
 
     #region 事件
@@ -41,8 +41,8 @@ public class Antman : MonoBehaviour    // 類別 類別名稱
         // 泛型 <T>
         //tra = GetComponent<Transform>();
         r2d = GetComponent<Rigidbody2D>();
-        aud = GetComponent<AudioSource>();
         ani = GetComponent<Animator>();
+        jjj = GetComponent<CapsuleCollider2D>();
 
         hpMax = hp;
     }
@@ -53,6 +53,10 @@ public class Antman : MonoBehaviour    // 類別 類別名稱
         if (Input.GetKeyDown(KeyCode.D)) Turn();
         if (Input.GetKeyDown(KeyCode.A)) Turn(180);
         Jump();
+        if (hp <= 0)
+        {
+            Dead();
+        }
     }
 
     // 固定更新事件：每禎 0.002 秒
@@ -63,10 +67,10 @@ public class Antman : MonoBehaviour    // 類別 類別名稱
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.name == "地板" || collision.gameObject.tag == "老鼠")
+        if (collision.gameObject.tag == "ground" )
         {
             isGround = true;
-            ani.SetBool("跳躍開關", false);
+            ani.SetBool("jump", false);
         }
     }
 
@@ -74,12 +78,11 @@ public class Antman : MonoBehaviour    // 類別 類別名稱
     {
         if (collision.tag == "金幣")
         {
-            aud.PlayOneShot(soundProp, 1.2f);
             Destroy(collision.gameObject);  // 刪除
             onEat.Invoke();                 // 呼叫事件
         }
 
-        if (collision.name == "死亡區域") Dead();
+        if (collision.gameObject.tag == "dead") Dead();
     }
     #endregion
 
@@ -91,7 +94,7 @@ public class Antman : MonoBehaviour    // 類別 類別名稱
     {
         if (r2d.velocity.magnitude < 10)
             r2d.AddForce(new Vector2(speed * Input.GetAxisRaw("Horizontal"), 0));
-        ani.SetBool("跑步開關", Input.GetAxisRaw("Horizontal") != 0);
+        ani.SetBool("run", Input.GetAxisRaw("Horizontal") != 0);
     }
 
     /// <summary>
@@ -103,7 +106,7 @@ public class Antman : MonoBehaviour    // 類別 類別名稱
         {
             isGround = false;
             r2d.AddForce(new Vector2(0, jump));
-            ani.SetBool("跳躍開關", true);
+            ani.SetBool("jump", true);
         }
     }
 
@@ -127,6 +130,7 @@ public class Antman : MonoBehaviour    // 類別 類別名稱
 
     private void Dead()
     {
+        jjj.isTrigger = true;
         final.SetActive(true);
     }
     #endregion

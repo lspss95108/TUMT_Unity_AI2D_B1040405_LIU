@@ -5,6 +5,8 @@ TagManager:
   serializedVersion: 2
   tags:
   - "\u91D1\u5E63"
+  - ground
+  - dead
   layers:
   - Default
   - TransparentFX
